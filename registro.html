@@ -3,7 +3,6 @@
 <head>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002D5A">
-    <!-- ETIQUETA VITAL PARA MÓVILES -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
     <title>Registro - CEN Rafael Arévalo González</title>
@@ -16,7 +15,6 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 md:p-8">
 
-    <!-- Contenedor responsivo -->
     <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-md border-t-8 border-blue-900">
         
         <div class="text-center mb-6">
@@ -31,8 +29,9 @@
                 <input type="text" id="ape" placeholder="Apellido" 
                     class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
             </div>
-
-            <input type="text" id="ced" placeholder="Su Cédula (V-)" 
+            
+            <input type="tel" id="ced" placeholder="Número de Cédula" 
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                 class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
             
             <input type="email" id="email" placeholder="Correo Electrónico" 
@@ -51,11 +50,11 @@
                 </select>
             </div>
 
-            <!-- Sección dinámica para Representante -->
-            <div id="caja-hijo" class="hidden animate-pulse">
+            <div id="caja-hijo" class="hidden">
                 <div class="bg-blue-50 p-4 rounded-2xl border-2 border-blue-200">
                     <label class="text-[10px] font-bold text-blue-500 uppercase">Vincular con Estudiante</label>
-                    <input type="text" id="ced_hijo" placeholder="Cédula del Estudiante (Hijo)" 
+                    <input type="tel" id="ced_hijo" placeholder="Cédula del Estudiante" 
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="w-full mt-1 p-2 border-b-2 border-blue-300 bg-transparent outline-none text-sm placeholder-blue-300 text-blue-900 font-bold">
                 </div>
             </div>
@@ -85,31 +84,37 @@
             }
         }
 
-          async function enviarRegistro() {
-    const email = document.getElementById('email').value;
-    // Expresión regular para validar formato de correo
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        async function enviarRegistro() {
+            const email = document.getElementById('email').value;
+            const cedula = document.getElementById('ced').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const datos = {
-        nombre: document.getElementById('nom').value,
-        apellido: document.getElementById('ape').value,
-        cedula: document.getElementById('ced').value,
-        email: email,
-        password: document.getElementById('pass').value,
-        rol: document.getElementById('rol').value,
-        cedula_hijo: document.getElementById('ced_hijo').value 
-    };
+            const datos = {
+                nombre: document.getElementById('nom').value,
+                apellido: document.getElementById('ape').value,
+                cedula: cedula,
+                email: email,
+                password: document.getElementById('pass').value,
+                rol: document.getElementById('rol').value,
+                cedula_hijo: document.getElementById('ced_hijo').value 
+            };
 
-    // Validación estricta
-    if(!emailRegex.test(email)) {
-        alert("⚠️ Por favor, ingrese un correo electrónico válido (ejemplo@correo.com).");
-        return;
-    }
+            // Validación de correo
+            if(!emailRegex.test(email)) {
+                alert("⚠️ Por favor, ingrese un correo electrónico válido.");
+                return;
+            }
 
-    if(!datos.nombre || !datos.password || !datos.cedula) {
-        alert("⚠️ Por favor, complete todos los campos obligatorios.");
-        return;
-    }
+            // Validación de Cédula (Que no esté vacía y sean números)
+            if(!cedula || isNaN(cedula)) {
+                alert("⚠️ Por favor, ingrese un número de cédula válido.");
+                return;
+            }
+
+            if(!datos.nombre || !datos.password) {
+                alert("⚠️ Por favor, complete todos los campos obligatorios.");
+                return;
+            }
 
             try {
                 const res = await fetch('/registro', {
@@ -133,4 +138,3 @@
     </script>
 </body>
 </html>
-
