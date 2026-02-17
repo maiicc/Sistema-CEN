@@ -3,46 +3,85 @@
 <head>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002D5A">
+    <!-- ETIQUETA VITAL PARA MÓVILES -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
     <title>Registro - CEN Rafael Arévalo González</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-96 border-t-4 border-blue-900">
-        <h2 class="text-2xl font-bold mb-6 text-center text-blue-900">Crear Cuenta</h2>
-        
-        <input type="text" id="nom" placeholder="Nombre" class="w-full mb-3 p-2 border rounded outline-none focus:ring-2 focus:ring-blue-500">
-        <input type="text" id="ape" placeholder="Apellido" class="w-full mb-3 p-2 border rounded outline-none focus:ring-2 focus:ring-blue-500">
-        <input type="text" id="ced" placeholder="Su Cédula" class="w-full mb-3 p-2 border rounded outline-none focus:ring-2 focus:ring-blue-500">
-        <input type="email" id="email" placeholder="Correo" class="w-full mb-3 p-2 border rounded outline-none focus:ring-2 focus:ring-blue-500">
-        <input type="password" id="pass" placeholder="Contraseña" class="w-full mb-3 p-2 border rounded outline-none focus:ring-2 focus:ring-blue-500">
-        
-        <select id="rol" onchange="toggleRepresentante()" class="w-full mb-3 p-2 border rounded outline-none bg-gray-50">
-            <option value="Docente">Docente</option>
-            <option value="Estudiante">Estudiante</option>
-            <option value="Representante">Representante</option>
-        </select>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 md:p-8">
 
-        <!-- Este div está oculto por defecto y solo se muestra si es Representante -->
-        <div id="caja-hijo" style="display: none;">
-            <p class="text-xs font-bold text-gray-500 mb-1 uppercase">Vincular Estudiante</p>
-            <input type="text" id="ced_hijo" placeholder="Cédula de su representado (Hijo)" class="w-full mb-4 p-2 border rounded border-blue-400 bg-blue-50 outline-none">
+    <!-- Contenedor responsivo -->
+    <div class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-md border-t-8 border-blue-900">
+        
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-black text-blue-900 uppercase tracking-tight">Crear Cuenta</h2>
+            <p class="text-gray-500 text-xs uppercase font-bold mt-1">CEN Rafael Arévalo González</p>
+        </div>
+        
+        <div class="space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+                <input type="text" id="nom" placeholder="Nombre" 
+                    class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
+                <input type="text" id="ape" placeholder="Apellido" 
+                    class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
+            </div>
+
+            <input type="text" id="ced" placeholder="Su Cédula (V-)" 
+                class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
+            
+            <input type="email" id="email" placeholder="Correo Electrónico" 
+                class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
+            
+            <input type="password" id="pass" placeholder="Contraseña Nueva" 
+                class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none focus:border-blue-500 bg-gray-50 text-sm">
+            
+            <div>
+                <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Seleccione su Rol</label>
+                <select id="rol" onchange="toggleRepresentante()" 
+                    class="w-full p-3 border-2 border-gray-100 rounded-2xl outline-none bg-gray-50 text-sm font-bold text-blue-900">
+                    <option value="Docente">Docente</option>
+                    <option value="Estudiante">Estudiante</option>
+                    <option value="Representante">Representante</option>
+                </select>
+            </div>
+
+            <!-- Sección dinámica para Representante -->
+            <div id="caja-hijo" class="hidden animate-pulse">
+                <div class="bg-blue-50 p-4 rounded-2xl border-2 border-blue-200">
+                    <label class="text-[10px] font-bold text-blue-500 uppercase">Vincular con Estudiante</label>
+                    <input type="text" id="ced_hijo" placeholder="Cédula del Estudiante (Hijo)" 
+                        class="w-full mt-1 p-2 border-b-2 border-blue-300 bg-transparent outline-none text-sm placeholder-blue-300 text-blue-900 font-bold">
+                </div>
+            </div>
+
+            <button onclick="enviarRegistro()" 
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold p-4 rounded-2xl shadow-lg transition-all active:scale-95 mt-4">
+                FINALIZAR REGISTRO
+            </button>
         </div>
 
-        <button onclick="enviarRegistro()" class="w-full bg-green-600 hover:bg-green-700 transition text-white font-bold p-3 rounded">REGISTRARSE</button>
-        <a href="login.html" class="block text-center mt-4 text-sm text-blue-600 hover:underline">Ya tengo cuenta, Iniciar sesión</a>
+        <div class="mt-6 text-center">
+            <a href="login.html" class="text-sm text-blue-700 font-bold hover:underline">
+                <i class="fas fa-arrow-left mr-1"></i> Volver al Inicio de Sesión
+            </a>
+        </div>
     </div>
 
     <script>
-        // Función para mostrar/ocultar el campo del hijo
         function toggleRepresentante() {
             const rol = document.getElementById('rol').value;
             const cajaHijo = document.getElementById('caja-hijo');
             if (rol === 'Representante') {
-                cajaHijo.style.display = 'block';
+                cajaHijo.classList.remove('hidden');
             } else {
-                cajaHijo.style.display = 'none';
-                document.getElementById('ced_hijo').value = ""; // Limpiar si cambia de opinión
+                cajaHijo.classList.add('hidden');
+                document.getElementById('ced_hijo').value = "";
             }
         }
 
@@ -54,29 +93,31 @@
                 email: document.getElementById('email').value,
                 password: document.getElementById('pass').value,
                 rol: document.getElementById('rol').value,
-                // Capturamos la cédula del hijo (si existe)
                 cedula_hijo: document.getElementById('ced_hijo').value 
             };
 
-            // Validaciones básicas
-            if(!datos.nombre || !datos.email || !datos.password) {
-                alert("Por favor llene los campos principales.");
+            if(!datos.nombre || !datos.email || !datos.password || !datos.cedula) {
+                alert("⚠️ Por favor, complete los campos obligatorios.");
                 return;
             }
 
-            const res = await fetch('/registro', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(datos)
-            });
-            
-            if(res.ok) {
-                const result = await res.json();
-                alert(result.mensaje);
-                window.location.href = 'login.html';
-            } else {
-                const err = await res.text();
-                alert("Error: " + err);
+            try {
+                const res = await fetch('/registro', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(datos)
+                });
+                
+                if(res.ok) {
+                    const result = await res.json();
+                    alert("✅ " + result.mensaje);
+                    window.location.href = 'login.html';
+                } else {
+                    const err = await res.text();
+                    alert("❌ Error: " + err);
+                }
+            } catch (error) {
+                alert("❌ Error de conexión con el servidor");
             }
         }
     </script>
