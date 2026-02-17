@@ -8,14 +8,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Servir archivos estáticos (HTML, CSS, JS) desde la carpeta actual
 app.use(express.static(__dirname));
 
-// ============================================================
-// CONFIGURACIÓN DE LA BASE DE DATOS (Clever Cloud)
-// ============================================================
-// En Render, configuraremos una "Environment Variable" llamada DATABASE_URL
-// Si no existe (estás en tu PC), usará el localhost
 const DB_URL = process.env.DATABASE_URL || "mysql://u2d6b5duaebwvhb4:DFPP4gU5Xv7tX3BaIJCf@buppvqijao8xm38bxuym-mysql.services.clever-cloud.com:3306/buppvqijao8xm38bxuym";
 
 const db = mysql.createConnection(DB_URL);
@@ -27,8 +21,6 @@ db.connect((err) => {
     }
     console.log('✅ Conexión exitosa a la base de datos');
 });
-
-// --- TUS RUTAS (Mantenemos toda tu lógica igual) ---
 
 app.post('/registro', async (req, res) => {
     const { nombre, apellido, cedula, email, password, rol, cedula_hijo } = req.body;
@@ -124,7 +116,6 @@ app.get('/stats-docente', (req, res) => {
     });
 });
 
-// IMPORTANTE: Redirigir cualquier otra ruta al login (para que al entrar a la URL de Render cargue la web)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
 });
