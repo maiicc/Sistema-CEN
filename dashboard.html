@@ -11,42 +11,62 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .sidebar { background-color: #002D5A; }
+        .sidebar { background-color: #002D5A; transition: transform 0.3s ease-in-out; }
         .role-section { display: none; }
         .seccion-app { display: none; }
         .seccion-app.active { display: block; }
+        
+        /* Overlay para el menú en móvil */
+        #menu-overlay { display: none; }
+        #menu-overlay.active { display: block; }
     </style>
 </head>
-<body class="bg-slate-100 flex h-screen overflow-hidden">
+<body class="bg-slate-100 flex h-screen overflow-hidden text-gray-800">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar w-64 text-white flex flex-col shadow-2xl">
-        <div class="p-6 text-center border-b border-blue-800">
-            <i class="fas fa-university text-3xl mb-2 text-blue-300"></i>
-            <h1 class="text-[10px] font-bold tracking-widest uppercase">CEN Rafael Arévalo González</h1>
+    <!-- Capa oscura al abrir menú en móvil -->
+    <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
+
+    <!-- SIDEBAR (RESPONSIVO) -->
+    <aside id="sidebar" class="sidebar w-64 text-white flex flex-col shadow-2xl fixed inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 lg:static">
+        <div class="p-6 text-center border-b border-blue-800 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-university text-2xl text-blue-300"></i>
+                <h1 class="text-[10px] font-bold tracking-widest uppercase text-left">CEN Rafael Arévalo <br> González</h1>
+            </div>
+            <button onclick="toggleMenu()" class="lg:hidden text-white"><i class="fas fa-times"></i></button>
         </div>
+        
         <nav class="flex-1 p-4 space-y-2 mt-4">
             <button onclick="cambiarSeccion('inicio')" class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition">
-                <i class="fas fa-home"></i> <span>Inicio</span>
+                <i class="fas fa-home w-5"></i> <span>Inicio</span>
             </button>
             <button onclick="cambiarSeccion('mensajeria')" class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition">
-                <i class="fas fa-envelope"></i> <span>Mensajería</span>
+                <i class="fas fa-envelope w-5"></i> <span>Mensajería</span>
             </button>
             <button onclick="cambiarSeccion('perfil')" class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition">
-                <i class="fas fa-user-circle"></i> <span>Mi Perfil</span>
+                <i class="fas fa-user-circle w-5"></i> <span>Mi Perfil</span>
             </button>
         </nav>
-        <button onclick="cerrarSesion()" class="m-4 p-3 bg-red-600 rounded-lg font-bold hover:bg-red-700 transition">
-            <i class="fas fa-sign-out-alt mr-2"></i> CERRAR SESIÓN
+        
+        <button onclick="cerrarSesion()" class="m-4 p-3 bg-red-600 rounded-lg font-bold hover:bg-red-700 transition flex items-center justify-center space-x-2">
+            <i class="fas fa-sign-out-alt"></i> <span>CERRAR SESIÓN</span>
         </button>
     </aside>
 
-    <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        
         <!-- TOPBAR -->
-        <header class="bg-white shadow-sm p-4 flex justify-between items-center px-8 border-b">
-            <h2 class="text-lg font-bold text-blue-900 uppercase tracking-tight" id="page-title">INICIO</h2>
-            <div class="flex items-center space-x-4">
-                <div class="text-right">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center px-4 md:px-8 border-b">
+            <div class="flex items-center">
+                <button onclick="toggleMenu()" class="lg:hidden mr-4 text-blue-900 text-xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 class="text-sm md:text-lg font-bold text-blue-900 uppercase tracking-tight" id="page-title">INICIO</h2>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <div class="text-right hidden sm:block">
                     <p class="text-sm font-bold text-gray-800" id="userName">Cargando...</p>
                     <p class="text-[10px] text-blue-600 font-black uppercase" id="userRol">---</p>
                 </div>
@@ -56,59 +76,65 @@
             </div>
         </header>
 
-        <div class="p-8">
+        <!-- AREA DE TRABAJO -->
+        <div class="p-4 md:p-8 overflow-y-auto flex-1">
+            
             <!-- 1. VISTA INICIO -->
             <div id="vista-inicio" class="seccion-app active">
+                
                 <!-- PANEL DOCENTE -->
                 <section id="section-docente" class="role-section space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
-                            <p class="text-gray-400 text-xs font-bold uppercase">Estudiantes</p>
-                            <p class="text-3xl font-bold" id="stat-estudiantes">0</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-blue-500">
+                            <p class="text-gray-400 text-[10px] font-bold uppercase">Estudiantes</p>
+                            <p class="text-2xl font-bold" id="stat-estudiantes">0</p>
                         </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
-                            <p class="text-gray-400 text-xs font-bold uppercase">Alertas</p>
-                            <p class="text-3xl font-bold text-red-600" id="stat-alertas">0</p>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-red-500">
+                            <p class="text-gray-400 text-[10px] font-bold uppercase">Alertas</p>
+                            <p class="text-2xl font-bold text-red-600" id="stat-alertas">0</p>
                         </div>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
-                            <p class="text-gray-400 text-xs font-bold uppercase">Evaluaciones</p>
-                            <p class="text-3xl font-bold" id="stat-evaluaciones">0</p>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-green-500">
+                            <p class="text-gray-400 text-[10px] font-bold uppercase">Evaluaciones</p>
+                            <p class="text-2xl font-bold" id="stat-evaluaciones">0</p>
                         </div>
                     </div>
+                    
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                        <h3 class="text-lg font-bold mb-4 text-blue-900"><i class="fas fa-plus-circle mr-2"></i> Registrar Nota</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <input type="text" id="est" placeholder="Nombre Estudiante" class="border p-2 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-                            <select id="mat" class="border p-2 rounded-lg"><option>Matemáticas</option><option>Castellano</option><option>Informática</option></select>
-                            <input type="number" id="nota" placeholder="Nota" class="border p-2 rounded-lg">
-                            <button onclick="saveNota()" class="bg-blue-900 text-white rounded-lg font-bold hover:bg-blue-800 transition">GUARDAR</button>
+                        <h3 class="text-lg font-bold mb-4 text-blue-900">Registrar Nota</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <input type="text" id="est" placeholder="Nombre Estudiante" class="border p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                            <select id="mat" class="border p-2 rounded-lg text-sm"><option>Matemáticas</option><option>Castellano</option><option>Informática</option></select>
+                            <input type="number" id="nota" placeholder="Nota" class="border p-2 rounded-lg text-sm">
+                            <button onclick="saveNota()" class="bg-blue-900 text-white rounded-lg font-bold py-2 hover:bg-blue-800 transition">GUARDAR</button>
                         </div>
                     </div>
                 </section>
 
                 <!-- PANEL ESTUDIANTE/REPRESENTANTE -->
                 <section id="section-estudiante" class="role-section space-y-6">
-                    <div class="bg-gradient-to-r from-blue-900 to-blue-700 p-8 rounded-2xl text-white shadow-xl">
-                        <h3 class="text-2xl font-bold">Resumen Académico</h3>
-                        <p class="opacity-70 text-sm">Año Escolar 2025-2026 | Sección 8B</p>
-                        <div class="mt-6 flex space-x-12">
-                            <div><p class="text-xs uppercase opacity-60">Promedio</p><p class="text-4xl font-black">17.5</p></div>
-                            <div><p class="text-xs uppercase opacity-60">Asistencia</p><p class="text-4xl font-black">95%</p></div>
+                    <div class="bg-gradient-to-r from-blue-900 to-blue-700 p-6 md:p-8 rounded-2xl text-white shadow-xl">
+                        <h3 class="text-xl md:text-2xl font-bold">Resumen Académico</h3>
+                        <div class="mt-4 flex space-x-8">
+                            <div><p class="text-[10px] uppercase opacity-60">Promedio</p><p class="text-3xl font-black">17.5</p></div>
+                            <div><p class="text-[10px] uppercase opacity-60">Asistencia</p><p class="text-3xl font-black">95%</p></div>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md">
-                        <h3 class="font-bold text-lg mb-4 text-gray-700">Historial de Calificaciones</h3>
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr class="text-gray-400 text-xs font-bold uppercase tracking-widest border-b">
-                                    <th class="pb-3">Asignatura</th>
-                                    <th class="pb-3 text-center">Nota</th>
-                                    <th class="pb-3 text-center">Fecha</th>
-                                    <th class="pb-3 text-center">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-notas-reales" class="text-gray-600"></tbody>
-                        </table>
+                    
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-md overflow-hidden">
+                        <h3 class="font-bold text-lg mb-4 text-gray-700 text-sm md:text-lg">Historial de Calificaciones</h3>
+                        <div class="overflow-x-auto"> <!-- Scroll para móvil -->
+                            <table class="w-full text-left min-w-[500px]">
+                                <thead>
+                                    <tr class="text-gray-400 text-[10px] font-bold uppercase tracking-widest border-b">
+                                        <th class="pb-3">Asignatura</th>
+                                        <th class="pb-3 text-center">Nota</th>
+                                        <th class="pb-3 text-center">Fecha</th>
+                                        <th class="pb-3 text-center">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-notas-reales" class="text-sm"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -116,47 +142,60 @@
             <!-- 2. VISTA MENSAJERÍA -->
             <div id="vista-mensajeria" class="seccion-app space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 h-fit">
-                        <h3 class="text-sm font-black text-blue-900 mb-4 uppercase tracking-widest"><i class="fas fa-paper-plane mr-2"></i> Redactar</h3>
+                    <div class="bg-white p-6 rounded-xl shadow-lg h-fit">
+                        <h3 class="text-sm font-black text-blue-900 mb-4 uppercase tracking-widest">Redactar</h3>
                         <div class="space-y-3">
-                            <select id="msg-destino" class="w-full border p-2 rounded-lg text-sm bg-gray-50"><option value="">Cargando...</option></select>
-                            <input type="text" id="msg-asunto" placeholder="Asunto" class="w-full border p-2 rounded-lg text-sm">
-                            <textarea id="msg-cuerpo" placeholder="Mensaje..." class="w-full border p-2 rounded-lg h-32 text-sm"></textarea>
-                            <button onclick="enviarMensaje()" class="w-full bg-blue-900 text-white font-bold py-2 rounded-lg hover:bg-blue-800">ENVIAR</button>
+                            <select id="msg-destino" class="w-full border p-2 rounded-lg text-sm bg-gray-50 outline-none"></select>
+                            <input type="text" id="msg-asunto" placeholder="Asunto" class="w-full border p-2 rounded-lg text-sm outline-none">
+                            <textarea id="msg-cuerpo" placeholder="Mensaje..." class="w-full border p-2 rounded-lg h-32 text-sm outline-none"></textarea>
+                            <button onclick="enviarMensaje()" class="w-full bg-blue-900 text-white font-bold py-2 rounded-lg">ENVIAR</button>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg md:col-span-2">
-                        <h3 class="text-sm font-black text-blue-900 mb-4 uppercase tracking-widest"><i class="fas fa-inbox mr-2"></i> Bandeja de Entrada</h3>
-                        <div id="bandeja-mensajes" class="space-y-4"><p class="text-center text-gray-400 py-10 italic">Bandeja vacía</p></div>
+                        <h3 class="text-sm font-black text-blue-900 mb-4 uppercase tracking-widest">Bandeja</h3>
+                        <div id="bandeja-mensajes" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. VISTA PERFIL (Corregida y fuera de Inicio) -->
+            <!-- 3. VISTA PERFIL -->
             <div id="vista-perfil" class="seccion-app">
-                <div class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                    <div class="bg-blue-900 h-24 flex items-center justify-center relative">
-                        <div class="absolute -bottom-10 w-20 h-20 bg-white rounded-full p-1 shadow-lg">
-                            <div class="w-full h-full bg-blue-100 rounded-full flex items-center justify-center text-blue-900 text-2xl font-bold">
+                <div class="max-w-md mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                    <div class="bg-blue-900 h-20 flex items-center justify-center relative">
+                        <div class="absolute -bottom-8 w-16 h-16 bg-white rounded-full p-1 shadow-md">
+                            <div class="w-full h-full bg-blue-100 rounded-full flex items-center justify-center text-blue-900 text-xl font-bold">
                                 <i class="fas fa-user-shield"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="p-8 pt-12 text-center">
-                        <h3 id="perf-nombre" class="text-xl font-bold text-gray-800">Cargando...</h3>
-                        <p id="perf-rol" class="text-blue-600 font-black uppercase text-[10px] tracking-[0.2em] mb-6"></p>
-                        <div class="space-y-4 text-left border-t pt-6">
-                            <div><p class="text-[10px] font-bold text-gray-400 uppercase">Cédula</p><p id="perf-cedula" class="text-sm font-semibold text-gray-700"></p></div>
-                            <div><p class="text-[10px] font-bold text-gray-400 uppercase">Correo</p><p id="perf-email" class="text-sm font-semibold text-gray-700"></p></div>
-                            <div id="perf-hijo-box" class="hidden bg-blue-50 p-3 rounded-xl border border-blue-100"><p class="text-[9px] font-bold text-blue-400 uppercase">Representado (Cédula)</p><p id="perf-hijo" class="text-sm font-black text-blue-900"></p></div>
+                    <div class="p-8 pt-10 text-center">
+                        <h3 id="perf-nombre" class="text-lg font-bold text-gray-800 uppercase">Cargando...</h3>
+                        <p id="perf-rol" class="text-blue-600 font-black uppercase text-[9px] tracking-[0.2em] mb-6"></p>
+                        <div class="space-y-3 text-left border-t pt-4 text-xs">
+                            <div class="flex justify-between border-b pb-2"><span>Cédula</span><span id="perf-cedula" class="font-bold"></span></div>
+                            <div class="flex justify-between border-b pb-2"><span>Correo</span><span id="perf-email" class="font-bold"></span></div>
+                            <div id="perf-hijo-box" class="hidden bg-blue-50 p-2 rounded-lg border border-blue-100 mt-2">
+                                <p class="text-[8px] font-bold text-blue-400 uppercase">Hijo (Cédula)</p>
+                                <p id="perf-hijo" class="font-black text-blue-900"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </main>
 
 <script>
+// Lógica de Menú Móvil
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('menu-overlay');
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('active');
+}
+
+// Cargar Datos al Inicio
 window.onload = async function() {
     const nombre = localStorage.getItem('usuario');
     const rol = localStorage.getItem('rol');
@@ -174,17 +213,23 @@ window.onload = async function() {
             cargarDatosReales(nombre);
         } else if (rol === 'Representante') {
             const cedulaHijo = localStorage.getItem('cedula_hijo');
-            const responseHijo = await fetch(`/nombre-hijo/${cedulaHijo}`);
-            const hijo = await responseHijo.json();
-            if (hijo.nombre) cargarDatosReales(hijo.nombre);
+            try {
+                const responseHijo = await fetch(`/nombre-hijo/${cedulaHijo}`);
+                const hijo = await responseHijo.json();
+                if (hijo.nombre) cargarDatosReales(hijo.nombre);
+            } catch(e) { console.error("Sin vínculo de hijo"); }
         }
     }
 };
 
+// Navegación
 async function cambiarSeccion(nombre) {
     document.querySelectorAll('.seccion-app').forEach(div => div.classList.remove('active'));
     document.getElementById('vista-' + nombre).classList.add('active');
     document.getElementById('page-title').innerText = nombre.toUpperCase();
+    
+    // Cerrar menú en móvil tras elegir sección
+    if (window.innerWidth < 1024) toggleMenu();
 
     if(nombre === 'mensajeria') {
         obtenerContactos();
@@ -194,6 +239,7 @@ async function cambiarSeccion(nombre) {
     }
 }
 
+// Funciones de API (Corregidas para Render)
 async function cargarPerfilReal() {
     const userId = localStorage.getItem('id_usuario');
     try {
@@ -206,26 +252,23 @@ async function cargarPerfilReal() {
         if(u.cedula_representado) {
             document.getElementById('perf-hijo-box').classList.remove('hidden');
             document.getElementById('perf-hijo').innerText = u.cedula_representado;
-        } else {
-            document.getElementById('perf-hijo-box').classList.add('hidden');
         }
     } catch (e) { console.error(e); }
 }
 
-// RESTO DE FUNCIONES (saveNota, cargarDatosReales, enviarMensaje, etc.)
 async function cargarDatosReales(nombreEstudiante) {
     const res = await fetch(`/mis-notas/${nombreEstudiante}`);
     const notas = await res.json();
     const tabla = document.getElementById('tabla-notas-reales');
-    tabla.innerHTML = notas.length ? "" : '<tr><td colspan="4" class="py-4 text-center">Sin notas</td></tr>';
+    tabla.innerHTML = notas.length ? "" : '<tr><td colspan="4" class="py-10 text-center text-gray-400">Sin notas</td></tr>';
     notas.forEach(n => {
         const color = n.nota >= 10 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
         tabla.innerHTML += `
             <tr class="border-b">
-                <td class="py-4 font-bold">${n.asignatura}</td>
+                <td class="py-4 font-bold text-blue-900">${n.asignatura}</td>
                 <td class="text-center font-black">${n.nota}</td>
-                <td class="text-center text-xs text-gray-400">${new Date(n.fecha_registro).toLocaleDateString()}</td>
-                <td class="text-center"><span class="${color} px-3 py-1 rounded-full text-[10px] font-bold uppercase">${n.nota >= 10 ? 'Aprobado' : 'Riesgo'}</span></td>
+                <td class="text-center text-[10px] text-gray-400 italic">${new Date(n.fecha_registro).toLocaleDateString()}</td>
+                <td class="text-center"><span class="${color} px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow-sm">${n.nota >= 10 ? 'Aprobado' : 'Riesgo'}</span></td>
             </tr>`;
     });
 }
@@ -237,10 +280,11 @@ async function saveNota() {
         nota: document.getElementById('nota').value,
         rol: localStorage.getItem('rol')
     };
+    if(!data.estudiante || !data.nota) return alert("Complete los campos");
     const res = await fetch('/guardar-nota', {
         method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
     });
-    if(res.ok) { alert("Guardada"); cargarEstadisticasDocente(); }
+    if(res.ok) { alert("¡Guardada!"); cargarEstadisticasDocente(); }
 }
 
 async function cargarEstadisticasDocente() {
@@ -269,10 +313,11 @@ async function enviarMensaje() {
         asunto: document.getElementById('msg-asunto').value,
         contenido: document.getElementById('msg-cuerpo').value
     };
+    if(!data.destinatario_id || !data.contenido) return alert("Complete el mensaje");
     const res = await fetch('/enviar-mensaje', {
         method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
     });
-    if(res.ok) { alert("Enviado"); document.getElementById('msg-cuerpo').value = ""; }
+    if(res.ok) { alert("Mensaje Enviado"); document.getElementById('msg-cuerpo').value = ""; }
 }
 
 async function obtenerMensajes() {
@@ -280,12 +325,12 @@ async function obtenerMensajes() {
     const res = await fetch(`/mensajes/${id}`);
     const mensajes = await res.json();
     const cont = document.getElementById('bandeja-mensajes');
-    cont.innerHTML = mensajes.length ? "" : '<p class="text-center py-10">Vacío</p>';
+    cont.innerHTML = mensajes.length ? "" : '<p class="text-center py-10 text-xs">No hay mensajes</p>';
     mensajes.forEach(m => {
-        cont.innerHTML += `<div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-900 shadow-sm">
-            <p class="text-[10px] font-bold text-blue-900">DE: ${m.nombre_remitente}</p>
-            <h4 class="text-sm font-black uppercase">${m.asunto}</h4>
-            <p class="text-sm text-gray-600">${m.contenido}</p>
+        cont.innerHTML += `<div class="bg-gray-50 p-4 rounded-xl border-l-4 border-blue-900 shadow-sm">
+            <p class="text-[9px] font-bold text-blue-900 uppercase">De: ${m.nombre_remitente}</p>
+            <h4 class="text-xs font-black uppercase text-gray-700">${m.asunto || 'Sin Asunto'}</h4>
+            <p class="text-xs text-gray-600 mt-1">${m.contenido}</p>
         </div>`;
     });
 }
