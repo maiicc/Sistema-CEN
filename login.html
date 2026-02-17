@@ -56,14 +56,20 @@
     </div>
 
     <script>
-    async function entrar() {
-        const email = document.getElementById('email').value;
-        const pass = document.getElementById('pass').value;
+async function entrar() {
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('pass').value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if(!email || !pass) {
-            alert("Por favor, completa todos los campos");
-            return;
-        }
+    if (!emailRegex.test(email)) {
+        alert("⚠️ El formato del correo no es válido.");
+        return;
+    }
+
+    if(!pass) {
+        alert("⚠️ Por favor, ingrese su contraseña.");
+        return;
+    }
 
         try {
             const res = await fetch('/login', {
@@ -99,3 +105,4 @@
     </script>
 </body>
 </html>
+
